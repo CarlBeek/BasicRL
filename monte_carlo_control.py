@@ -7,7 +7,7 @@ class MCControl(object):
         self.Nsa = dict()
         self.Q = dict()
         self.N0 = 100
-        self.actions = env.get_actions()
+        self.actions = env.action_space()
         self.m = len(self.actions)
         self.env = env
 
@@ -52,15 +52,13 @@ class MCControl(object):
         self.Q[(s, a)] = self._get_q(s, a) + self._alpha(s, a)*(G - self._get_q(s, a))
 
     def _run_episode(self):
-        self.env.configure_game()
+        state = self.env.reset()
         state_actions = []
-        while not self.env.is_terminated():
-            state = self.env.get_players_observation()
+        done = False
+        while not done:
             action = self._sample_pi(state)
             state_actions.append((state, action))
-            self.env.step(action)
-
-        reward = self.env.get_reward()
+            state, reward, done, _ = self.env.step(action)
 
         for state, action in state_actions:
             self._update_ns(state)

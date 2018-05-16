@@ -2,7 +2,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import easy21 as e21
 import monte_carlo_control
-from functools import reduce
 
 if __name__ == '__main__':
     env = e21.Easy21()
@@ -11,7 +10,7 @@ if __name__ == '__main__':
     grid = np.zeros([11, 22])
     for k,v in Q.items():
         (s, a) = k
-        a_star = max(env.get_actions(), key=lambda x: Q[s, x])
+        a_star = max(env.action_space(), key=lambda x: Q[s, x])
         if a == a_star:
             grid[s[0], s[1]] = v
     plt.imshow(grid)

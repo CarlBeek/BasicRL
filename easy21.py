@@ -10,11 +10,12 @@ class Easy21(object):
         self.terminate = True
         self.reward = 0
 
-    def configure_game(self):
+    def reset(self):
         self._configure_dealer()
         self._configure_player()
         self.terminate = False
         self.reward = 0
+        return (self.dealers_first_card, self.player_sum), self.reward, self.terminate
 
     def _configure_dealer(self):
         self.dealers_first_card = random.randint(1, 10)
@@ -49,16 +50,7 @@ class Easy21(object):
         if self.dealers_sum <= 17:
             self.dealers_sum += self._draw_card()
 
-    def get_players_observation(self):
-        return self.dealers_first_card, self.player_sum
-
-    def is_terminated(self):
-        return self.terminate
-
-    def get_reward(self):
-        return self.reward
-
-    def get_actions(self):
+    def action_space(self):
         return self.actions
 
     def step(self, action):
@@ -69,4 +61,4 @@ class Easy21(object):
                 self._dealer_step()
         if self._bust(self.player_sum) or self._bust(self.dealers_sum) or action != ACTION_HIT:
             self._terminate_game()
-            return self.reward, self.terminate
+        return (self.dealers_first_card, self.player_sum), self.reward, self.terminate, None
