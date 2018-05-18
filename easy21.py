@@ -54,11 +54,13 @@ class Easy21(object):
         return self.actions
 
     def step(self, action):
+        old_p_sum = self.player_sum
         if action == ACTION_HIT:
             self.player_sum += self._draw_card()
         else:
             while self.dealers_sum <= 17 and not self._bust(self.dealers_sum):
                 self._dealer_step()
         if self._bust(self.player_sum) or self._bust(self.dealers_sum) or action != ACTION_HIT:
+            self.player_sum = old_p_sum
             self._terminate_game()
         return (self.dealers_first_card, self.player_sum), self.reward, self.terminate, None
